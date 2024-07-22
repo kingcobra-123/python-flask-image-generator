@@ -37,21 +37,21 @@ def generate_image():
     
     return send_file(img_io, mimetype='image/jpeg')
 
-# def create_sample_image():
-#     text = "Sample Text"
+def create_sample_image():
+    text = "Sample Text"
     
-#     image = Image.new('RGB', (500, 200), color=(247, 167, 11))  # #F7A70B background
-#     draw = ImageDraw.Draw(image)
-#     font = ImageFont.load_default()
-#     text_bbox = draw.textbbox((0, 0), text, font=font)
-#     text_width = text_bbox[2] - text_bbox[0]
-#     text_height = text_bbox[3] - text_bbox[1]
-#     x = (500 - text_width) // 2
-#     y = (200 - text_height) // 2
-#     draw.text((x, y), text, font=font, fill=(0, 0, 0))  # Black text color
+    image = Image.new('RGB', (500, 200), color=(247, 167, 11))  # #F7A70B background
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.load_default()
+    text_bbox = draw.textbbox((0, 0), text, font=font)
+    text_width = text_bbox[2] - text_bbox[0]
+    text_height = text_bbox[3] - text_bbox[1]
+    x = (500 - text_width) // 2
+    y = (200 - text_height) // 2
+    draw.text((x, y), text, font=font, fill=(0, 0, 0))  # Black text color
     
-#     image.save("sample_image.jpg")
-#     print("Sample image created and saved as sample_image.jpg")
+    image.save("sample_image.jpg")
+    print("Sample image created and saved as sample_image.jpg")
 
 if __name__ == '__main__':
     # create_sample_image()
