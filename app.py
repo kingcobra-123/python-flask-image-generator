@@ -55,4 +55,5 @@ def create_sample_image():
 
 if __name__ == '__main__':
     # create_sample_image()
+    print("Starting Flask server...")
     app.run(debug=True)
