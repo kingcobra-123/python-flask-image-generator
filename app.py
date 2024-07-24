@@ -27,9 +27,6 @@ def home():
     return "Flask app is running!"
 
 @app.route('/generate-image', methods=['POST'])
-
-
-
 def generate_image():
     data = request.json
     text = data['text']
