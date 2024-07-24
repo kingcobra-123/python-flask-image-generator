@@ -4,11 +4,16 @@ import io
 import random
 import string
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from dotenv import load_dotenv
+import os
+
+# Load the environment variables
+load_dotenv()
 
 app = Flask(__name__)
 
-connection_string = "DefaultEndpointsProtocol=https;AccountName=conbuyimagegenerator;AccountKey=CgozqGfZwarh/UgLUFcu8PAu94yWhG90XbDQfOKwVTxxbh0WKrwdWvA2ACeqxStZrvtwtlyYw8Lh+ASth/5Hjw==;EndpointSuffix=core.windows.net"
-container_name = "conbuyimagegenerator"
+connection_string = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
+container_name = os.getenv('AZURE_CONTAINER_NAME')
 
 # Initialize the BlobServiceClient
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
@@ -22,6 +27,9 @@ def home():
     return "Flask app is running!"
 
 @app.route('/generate-image', methods=['POST'])
+
+
+
 def generate_image():
     data = request.json
     text = data['text']
