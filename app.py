@@ -1,8 +1,21 @@
 from flask import Flask, request, send_file
 from PIL import Image, ImageDraw, ImageFont
 import io
+import random
+import string
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 app = Flask(__name__)
+
+connection_string = "DefaultEndpointsProtocol=https;AccountName=conbuyimagegenerator;AccountKey=CgozqGfZwarh/UgLUFcu8PAu94yWhG90XbDQfOKwVTxxbh0WKrwdWvA2ACeqxStZrvtwtlyYw8Lh+ASth/5Hjw==;EndpointSuffix=core.windows.net"
+container_name = "conbuyimagegenerator"
+
+# Initialize the BlobServiceClient
+blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+
+def generate_random_name(length=12):
+    letters = string.ascii_lowercase + string.digits
+    return ''.join(random.choice(letters) for i in range(length))
 
 @app.route('/')
 def home():
@@ -38,8 +51,19 @@ def generate_image():
     img_io = io.BytesIO()
     image.save(img_io, 'JPEG')
     img_io.seek(0)
-    
-    return send_file(img_io, mimetype='image/jpeg')
+
+    # Generate a random name for the image
+    image_name = generate_random_name() + '.jpg'
+
+    #create the blob client
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=image_name)
+
+    #upload the image to the blob
+    blob_client.upload_blob(img_io, blob_type="BlockBlob")
+
+    # Return the URL of the image uploaded
+    blob_url = blob_client.url
+    return {"image_url": blob_url}
 
 if __name__ == '__main__':
     print("Starting Flask server...")
