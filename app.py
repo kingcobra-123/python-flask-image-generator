@@ -27,9 +27,9 @@ def home():
     return "Flask app is running!"
 
 @app.route('/generate-image', methods=['POST'])
-def generate_image(text):
-    # data = request.json
-    # text = data['text']
+def generate_image():
+    data = request.json
+    text = data['text']
     
     # Define the image size and background color
     width, height = 1080, 1920
