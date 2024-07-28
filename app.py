@@ -27,20 +27,23 @@ def home():
     return "Flask app is running!"
 
 @app.route('/generate-image', methods=['POST'])
-def generate_image():
-    data = request.json
-    text = data['text']
+def generate_image(text):
+    # data = request.json
+    # text = data['text']
     
     # Define the image size and background color
-    width, height = 500, 200
+    width, height = 1080, 1920
     background_color = (247, 167, 11)  # #F7A70B in RGB
 
     # Create the image
     image = Image.new('RGB', (width, height), color=background_color)
     draw = ImageDraw.Draw(image)
     
-    # Load the default font and calculate text size
-    font = ImageFont.load_default()
+    font_path = os.path.join(os.path.dirname(__file__), "fonts", "Roboto_Slab", "RobotoSlab-VariableFont_wght.ttf")
+    font_size = 100  # Change this to the desired font size
+    font_size = 100 
+    font = ImageFont.truetype(font_path, font_size)
+
     text_bbox = draw.textbbox((0, 0), text, font=font)
     text_width = text_bbox[2] - text_bbox[0]
     text_height = text_bbox[3] - text_bbox[1]
@@ -66,10 +69,20 @@ def generate_image():
     #upload the image to the blob
     blob_client.upload_blob(img_io, blob_type="BlockBlob")
 
+    # Save the image locally
+    # local_path = os.path.join('local_images', image_name)
+    # os.makedirs('local_images', exist_ok=True)
+    # image.save(local_path)
+
+    # return local_path
+
+
     # Return the URL of the image uploaded
     blob_url = blob_client.url
     return {"image_url": blob_url}
 
 if __name__ == '__main__':
+    # sample_text = "Hello, World!"
+    # generate_image(sample_text)
     print("Starting Flask server...")
     app.run(host='0.0.0.0', port=8000, debug=True)
