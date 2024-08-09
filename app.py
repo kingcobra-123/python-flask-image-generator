@@ -51,7 +51,7 @@ def wrap_text(text, font, max_width, draw):
 
 @app.route('/')
 def home():
-    return "Flask app is running!"
+    return "Conbuy Python Flask API"
 
 @app.route('/generate-image', methods=['POST'])
 
