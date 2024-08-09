@@ -62,6 +62,7 @@ def generate_image():
     # Define the image size and background color
     width, height = 1080, 1920
     background_color = (247, 167, 11)  # #F7A70B in RGB
+    padding = 50  # Padding on all sides
 
     # Create the image
     image = Image.new('RGB', (width, height), color=background_color)
@@ -69,23 +70,28 @@ def generate_image():
     
     font_path = os.path.join(os.path.dirname(__file__), "fonts", "Roboto_Slab", "RobotoSlab-VariableFont_wght.ttf")
     font_size = 100  
-    font_size = 100 
     font = ImageFont.truetype(font_path, font_size)
 
-    # Calculate max width for text
-    max_text_width = width * 0.9 
+     # Calculate max drawable width and height
+    max_text_width = width - 2 * padding
+    max_text_height = height - 2 * padding
 
-    # Wrap the text
-    wrapped_text = wrap_text(text, font, max_text_width, draw)
-
-    # Calculate total height of wrapped text lines
-    total_text_height = sum(draw.textbbox((0, 0), line, font=font)[3] - draw.textbbox((0, 0), line, font=font)[1] for line in wrapped_text)
+   # Loop to adjust font size if the text height exceeds max_text_height
+    while True:
+        wrapped_text = wrap_text(text, font, max_text_width, draw)
+        total_text_height = sum(draw.textbbox((0, 0), line, font=font)[3] - draw.textbbox((0, 0), line, font=font)[1] for line in wrapped_text)
+        if total_text_height <= max_text_height or font.size <= 10:  # Ensure font doesn't get too small
+            break
+        # Reduce font size if the text is too large to fit on the image
+        font_size = font.size - 1
+        font = ImageFont.truetype(font_path, font_size)
 
     # Calculate vertical starting point to center text
-    y = (height - total_text_height) // 2  
+    y = (height - total_text_height) // 2 
 
 
-    # Add wrapped text to image
+     # Add wrapped text to image with padding
+    y += padding  
     for line in wrapped_text:
         text_bbox = draw.textbbox((0, 0), line, font=font)
         text_width = text_bbox[2] - text_bbox[0]
@@ -93,7 +99,7 @@ def generate_image():
         x = (width - text_width) // 2  
         draw.text((x, y), line, font=font, fill=(0, 0, 0)) 
         y += line_height
-    
+
     # Save the image to a BytesIO object
     img_io = io.BytesIO()
     image.save(img_io, 'JPEG')
@@ -122,7 +128,7 @@ def generate_image():
     return {"image_url": blob_url}
 
 if __name__ == '__main__':
-    # sample_text = "Hello, World! "
+    # sample_text = "Hello, World!"
     # generate_image(sample_text)
     print("Starting Flask server...")
     app.run(host='0.0.0.0', port=8000, debug=True)
